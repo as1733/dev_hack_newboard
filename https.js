@@ -263,8 +263,16 @@
         console.log(data);
         if(data.includes("+joinChat")){
             var temp="https://localhost:1310/params?name="+username+"&roomname="+data.slice(data.indexOf("+joinChat")+10,data.indexOf("|"));
-            client.write("$To: as1733 From: avsbot $<avsbot> "+temp+"|");
+            client.write("$To: "+username+" From: avsbot $<avsbot> "+temp+"|");
             open(temp); };
+        if(data.includes("+activeRooms")){
+            var temp="\n* ";
+            for (var x in rooms)
+            {temp+="* "+x+" \n ";
+             }
+
+            client.write("$To: "+username+" From: avsbot $<avsbot> "+temp+"|");
+             };
         var t=nmdc_escape('cake by ocean');
         //console.log(rem);
         if(data.includes('$Lock')){console.log("Key wanted");
