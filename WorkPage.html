@@ -7086,17 +7086,24 @@
     <div class="form-group">
         <label class="control-label" for="roomid">New Room Id</label>
         <input class="form-control" id="roomid" type="text" value="Your New Room For chat...">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="privateroom"> Private Room ?
+            </label>
+
+            <p>
+                <p>
         <label class="control-label" for="userid">Unique Nick</label>
         <input class="form-control" id="userid" type="text" value="Choose a unique nick...">
         <span   id =loginstatus class="label label-info" >Create or Join a existing Room for continuing....</span>
 
         <div align="right">
 
-            <input type-button id="transmission" class="btn btn-success" value="ENter Conference" >
+            <input type=button id="transmission" class="btn btn-success" value="ENter Conference" >
             <input type=button id="createroom" value="Create A Rooom" class="btn btn-primary">
 
-            <input type-button id="joinroom" class="btn btn-primary" value="Join the Room" >
-            <input type-button id="mediabutton" class="btn btn-success" value="Start Camera" >
+            <input type=button id="joinroom" class="btn btn-primary" value="Join the Room" >
+            <input type=button id="mediabutton" class="btn btn-success" value="Start Camera" >
 
         </div>
 
@@ -7104,23 +7111,27 @@
  <div id="sss"> <video id="Myvideo" poster="images.jpg" width="320" height="240" autoplay>
 </video>
 </div>
-    <p></p>
-    <a href="#" class="btn btn-primary">Primary</a>
-    <a href="#" class="btn btn-success">Success</a>
-    <a href="#" class="btn btn-info">Info</a>
-    <a href="#" class="btn btn-warning">Warning</a>
-    <a href="#" class="btn btn-danger">Danger</a>
-</div>
+
+            <textarea rows="5" cols="200" id ="chats"></textarea>
+        <input class="form-control" id="chatmsg" type="text" value="send msgs in chat">
+
+        <input type=button id="chatbtn" value ="Send Now">
+
 <script>
 
     /* variable declaration*/
     var socket=new WebSocket("wss://localhost:1310");//lan:.....>>>>>"wss://192.168.118.26:1010
     while(socket.readyState==="CONNECTING"){alert();};
     var url=location.href;
-
+    var chatarea=document.getElementById("chats");
     var  roomid=document.getElementById("roomid");
     var userid=document.getElementById("userid");
-    var userlist;
+    var sendMsg=document.getElementById("chatbtn");
+
+    {
+
+    }
+    var password;
     var pairedwith;
     var RTCPeerConnection=webkitRTCPeerConnection;
     var servers=null;
@@ -7159,14 +7170,27 @@
 
     /*button click handling*/
     mediabtton.onclick=function(){startCameraFeed();};
-
+    sendMsg.onclick=sendChat;
     createroomBtn.onclick=registrationBtnClick;
     joinroomBtn.onclick=joiningNow;
 
    /*end of click handling */
 
 
+{
+    var privaterom = document.getElementById('privateroom');
+    privaterom.onchange = function() {
+        console.log(privaterom);
+        if (privaterom.checked) {
+           password= prompt("enter the password for the room.");
+        } else {
+            alert("its a public room anyone can enter this.");
+        }
+    }
 
+
+
+}
 
 
    /* functionssss  */
@@ -7223,6 +7247,13 @@ function startCameraFeed(){
     });
 
 };
+    function sendChat(){var msg=document.getElementById("chatmsg").value;
+        var oringinated=userid;
+        var meta={action:"chat",room:roomid.value,user:userid.value,msg:msg};
+        console.log(meta);
+        socket.send(JSON.stringify(meta));
+
+    };
 /* functionsss*/
 
 
@@ -7232,6 +7263,16 @@ function startCameraFeed(){
 socket.onmessage=function(data1){
     console.log(data1);
     var data=JSON.parse(data1.data);
+    if(data.action==="chat")
+    {
+    var msg="<"+data.userh+"> "+""+data.msg;
+        chatarea.value+="\n"+msg;
+    }
+
+    ;
+
+
+
     if(data.action==="Create")
     {if(data.execution===1)
     {  console.log("Room created successful");

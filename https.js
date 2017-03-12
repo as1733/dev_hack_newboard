@@ -103,13 +103,26 @@
                     if (Object.keys(rooms[r]).length > 0) {
                         get.roomnames.push(r);
                         get.noofusers.push(Object.keys(rooms[r]).length);
-                        console.log("Room name " + r);
+                        //console.log("Room name " + r);
                     }
                 }
                 var replas = {action: "listofactive", roomsa: get};
                 link.send(JSON.stringify(get));
             }
+            if(data.action==="chat")
+            {
+                for (var r in rooms){
+                    if(r===data.room)
+                    {for (var y in rooms[data.room])
+                    {console.log("### "+y);
+                        console.log(data)
+                        var meta={action:"chat",userh:data.user,msg:data.msg}
+                        rooms[r][y].send(JSON.stringify(meta));
 
+                    }
+                    }
+                }
+            }
 
         });
         /*  message wala cope*/
